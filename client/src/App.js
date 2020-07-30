@@ -1,24 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+
+import Spotify from "spotify-web-api-js";
+const spotifyWebApi = new Spotify();
+
+function getHashParams() {
+  var hashParams = {};
+  var e,
+    r = /([^&;=]+)=?([^&;]*)/g,
+    q = window.location.hash.substring(1);
+  while ((e = r.exec(q))) {
+    hashParams[e[1]] = decodeURIComponent(e[2]);
+  }
+  return hashParams;
+}
+
+function getNowPlaying(nowPlaying, setNowPlaying) {
+  spotifyWebApi.getMyCurrentPlaybackState().then((response) => {
+    console.log("here, ", response);
+    setNowPlaying({
+      name: response.item.name,
+      image: response.item.album.images[0].url,
+    });
+    console.log(nowPlaying);
+  });
+}
 
 function App() {
+  const params = getHashParams();
+  const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false);
+  const [nowPlaying, setNowPlaying] = useState({
+    name: "Not Checked",
+    image: "",
+  });
+
+  if (params.access_token) {
+    spotifyWebApi.setAccessToken(params.access_token);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <a href="http://localhost:8888">
+        <button>Login With Spotify</button>
+      </a>
+      <div> Now Playing: {nowPlaying.name} </div>
+      <div>
+        <img src={nowPlaying.image} style={{ width: 100 }} />
+      </div>
+
+      <button onClick={() => getNowPlaying(nowPlaying, setNowPlaying)}>
+        Check Now Playing
+      </button>
     </div>
   );
 }
