@@ -27,20 +27,21 @@ function getNowPlaying(nowPlaying, setNowPlaying) {
 }
 
 function App() {
-  const params = getHashParams();
-  const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false);
-  const [nowPlaying, setNowPlaying] = useState({
-    name: "Not Checked",
-    image: "",
-  });
+  // const params = getHashParams();
+  // const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false);
+  // const [nowPlaying, setNowPlaying] = useState({
+  //   name: "Not Checked",
+  //   image: "",
+  // });
 
-  if (params.access_token) {
-    spotifyWebApi.setAccessToken(params.access_token);
-  }
+  // if (params.access_token) {
+  //   spotifyWebApi.setAccessToken(params.access_token);
+  // }
 
   return (
     <div className="App">
-      <a href="http://localhost:8888">
+      Hello
+      {/* <a href="http://localhost:8888">
         <button>Login With Spotify</button>
       </a>
       <div> Now Playing: {nowPlaying.name} </div>
@@ -50,7 +51,7 @@ function App() {
 
       <button onClick={() => getNowPlaying(nowPlaying, setNowPlaying)}>
         Check Now Playing
-      </button>
+      </button> */}
     </div>
   );
 }
