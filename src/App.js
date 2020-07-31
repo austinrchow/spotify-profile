@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import Login from "./components/Login.js";
+import Profile from "./components/Profile.js";
 
 import Spotify from "spotify-web-api-js";
 const spotifyWebApi = new Spotify();
@@ -15,38 +17,40 @@ function getHashParams() {
   return hashParams;
 }
 
-function getNowPlaying(nowPlaying, setNowPlaying) {
-  spotifyWebApi.getMyCurrentPlaybackState().then((response) => {
-    console.log("here, ", response);
-    if (response.item !== undefined) {
-      console.log("hello");
-      setNowPlaying({
-        name: response.item.name,
-        image: response.item.album.images[0].url,
-      });
-    }
-    console.log(nowPlaying);
-  });
+// function getNowPlaying(nowPlaying, setNowPlaying) {
+//   spotifyWebApi.getMyCurrentPlaybackState().then((response) => {
+//     console.log("here, ", response);
+//     if (response.item !== undefined) {
+//       console.log("hello");
+//       setNowPlaying({
+//         name: response.item.name,
+//         image: response.item.album.images[0].url,
+//       });
+//     }
+//     console.log(nowPlaying);
+//   });
 
-  spotifyWebApi
-    .getMe() // note that we don't pass a user id
-    .then(
-      function (data) {
-        console.log("User playlists", data);
-      },
-      function (err) {
-        console.error(err);
-      }
-    );
-}
+//   spotifyWebApi
+//     .getMe() // note that we don't pass a user id
+//     .then(
+//       function (data) {
+//         console.log("User playlists", data);
+//       },
+//       function (err) {
+//         console.error(err);
+//       }
+//     );
+// }
 
 function App() {
+  // get token here TODO: refresh token
   const params = getHashParams();
   const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false);
-  const [nowPlaying, setNowPlaying] = useState({
-    name: "Not Checked",
-    image: "",
-  });
+
+  // const [nowPlaying, setNowPlaying] = useState({
+  //   name: "Not Checked",
+  //   image: "",
+  // });
 
   if (params.access_token) {
     spotifyWebApi.setAccessToken(params.access_token);
@@ -54,7 +58,8 @@ function App() {
 
   return (
     <div className="App">
-      Hello
+      {loggedIn ? <Profile /> : <Login />}
+      {/* Hello
       <a href="http://localhost:8888/">
         <button>Login With Spotify</button>
       </a>
@@ -64,7 +69,7 @@ function App() {
       </div>
       <button onClick={() => getNowPlaying(nowPlaying, setNowPlaying)}>
         Check Now Playing
-      </button>
+      </button> */}
     </div>
   );
 }
