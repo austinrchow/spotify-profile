@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import Login from "./components/Login.js";
 import Profile from "./components/Profile.js";
-
-import Spotify from "spotify-web-api-js";
-const spotifyWebApi = new Spotify();
+import spotifyWebApi from "./spotify.js";
 
 function getHashParams() {
   var hashParams = {};
