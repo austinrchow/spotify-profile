@@ -12,10 +12,33 @@ const Container = styled.div`
 const UserInformation = styled.div`
   margin-left: 150px;
   display: flex;
-  flex-direction: row;
+  align-items: center;
+  flex-direction: column;
   background-color: #181818;
   height: 100vh;
   width: 100vw;
+`;
+
+const UserImageCropper = styled.div`
+  width: 200px;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+  margin: 100px 0 30px 0;
+`;
+
+const UserImage = styled.img`
+  display: inline;
+  margin: 0 auto;
+  height: 100%;
+  width: auto;
+`;
+
+const UserDisplayName = styled.div`
+  color: white;
+  font-size: 40px;
+  font-weight: 600;
 `;
 
 const User = () => {
@@ -39,8 +62,10 @@ const User = () => {
   return (
     <Container>
       <UserInformation>
-        <div> {displayName} </div>
-        <img src={displayImage} />
+        <UserImageCropper>
+          <UserImage src={displayImage} />
+        </UserImageCropper>
+        <UserDisplayName> {displayName} </UserDisplayName>
       </UserInformation>
     </Container>
   );
