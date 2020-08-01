@@ -39,6 +39,10 @@ const UserDisplayName = styled.div`
   color: white;
   font-size: 40px;
   font-weight: 600;
+  &:hover,
+  &:focus {
+    color: red;
+  }
 `;
 
 const User = () => {

@@ -5,6 +5,7 @@ import TopArtists from "./TopArtists.js";
 import TopTracks from "./TopTracks.js";
 import Recent from "./Recent.js";
 import Navbar from "./Navbar.js";
+import About from "./About.js";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -18,7 +19,8 @@ const Profile = () => {
       <Container>
         <Navbar />
         <Switch>
-          <Route component={User} path="/" exact />
+          <Route component={About} path="/" exact />
+          <Route component={User} path="/user" exact />
           <Route component={TopArtists} path="/artists" />
           <Route component={TopTracks} path="/tracks" />
           <Route component={Recent} path="/recent" />
