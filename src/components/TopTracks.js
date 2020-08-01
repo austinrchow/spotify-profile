@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import spotifyWebApi from "../spotify.js";
 import "../App.css";
+import MdPlay from "react-ionicons/lib/MdPlay";
 
 const Container = styled.div`
   display: flex;
@@ -30,6 +31,10 @@ const TrackDisplay = styled.li`
   align-items: left;
   margin-bottom: 4vh;
   width: 50vw;
+
+  :hover .img-top {
+    display: inline;
+  }
 `;
 
 // child of track display
@@ -84,20 +89,25 @@ const addToQueue = (event) => {
 const TrackList = (props) => {
   const tracks = props.tracks;
   const trackItems = tracks.map((track) => (
-    <TrackDisplay
-      uri={track.uri}
+    <a
       key={track.id}
-      //   onClick={(event) => playTrack(props, event)}
+      href={track.external_urls.spotify}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ borderStyle: "none" }}
     >
-      <TrackImg src={track.album.images[0].url} />
-      <TrackInfo>
-        <div>{track.name}</div>
-        <div style={{ color: "grey" }}>{track.artists[0].name}</div>
-      </TrackInfo>
-      <button id={track.id} onClick={(event) => addToQueue(event)}>
-        ADD
-      </button>
-    </TrackDisplay>
+      <TrackDisplay key={track.id}>
+        <div className="card">
+          <TrackImg src={track.album.images[0].url} />
+          <MdPlay fontSize="45px" color="white" className="img-top" />
+        </div>
+
+        <TrackInfo>
+          <div>{track.name}</div>
+          <div style={{ color: "grey" }}>{track.artists[0].name}</div>
+        </TrackInfo>
+      </TrackDisplay>
+    </a>
   ));
 
   return <ul>{trackItems}</ul>;

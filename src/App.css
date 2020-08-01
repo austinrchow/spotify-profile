@@ -16,3 +16,32 @@
   color: white !important;
   border-bottom: 2px solid white;
 }
+
+a img {
+  border-style: none;
+}
+
+a:hover,
+a:visited,
+a:link,
+a:active {
+  text-decoration: none;
+}
+
+.card {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  display: inline-block;
+  text-align: center;
+}
+.card .img-top {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 20%;
+
+  transform: translateX(-50%);
+
+  z-index: 99;
+}
