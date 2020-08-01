@@ -26,6 +26,7 @@ const TrackDisplay = styled.li`
   flex-direction: row;
   align-items: left;
   margin-bottom: 4vh;
+  width: 50vw;
 `;
 const TrackImg = styled.img`
   height: 80px;
@@ -41,9 +42,20 @@ const TrackInfo = styled.div`
   margin-left: 1vw;
 `;
 
-const LoadingPage = () => {
-  return <div> Loading </div>;
-};
+const Times = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 50vw;
+  margin-bottom: 4vh;
+`;
+
+const TimeDisplay = styled.div`
+  font-size: 18px;
+  font-weight: 500;
+  color: grey;
+`;
 
 const TrackList = (props) => {
   console.log(props.tracks);
@@ -61,26 +73,45 @@ const TrackList = (props) => {
   return <ul>{trackItems}</ul>;
 };
 
+function getTracks(setTracks, term) {
+  spotifyWebApi.getMyTopTracks({ limit: 50, time_range: term }).then(
+    function (data) {
+      setTracks(data.items);
+    },
+    function (err) {
+      console.error(err);
+    }
+  );
+}
+
+const TimeRanges = (props) => {
+  return (
+    <Times>
+      <TimeDisplay onClick={() => getTracks(props.setTracks, "long_term")}>
+        All Time
+      </TimeDisplay>
+      <TimeDisplay onClick={() => getTracks(props.setTracks, "medium_term")}>
+        Last 6 Months
+      </TimeDisplay>
+      <TimeDisplay onClick={() => getTracks(props.setTracks, "short_term")}>
+        Last Month
+      </TimeDisplay>
+    </Times>
+  );
+};
 const TopTracks = () => {
   const [tracks, setTracks] = useState([]);
 
   useEffect(() => {
-    spotifyWebApi.getMyTopTracks({ limit: 50 }).then(
-      function (data) {
-        console.log("Top tracks", data);
-        setTracks(data.items);
-      },
-      function (err) {
-        console.error(err);
-        console.log("ERROR");
-      }
-    );
+    getTracks(setTracks, "long_term");
   }, []);
 
   return (
     <Container>
       <TrackContainer>
         <h1 style={{ color: "white" }}>Top Tracks</h1>
+        <TimeRanges setTracks={setTracks} />
+
         <TrackList tracks={tracks} />
       </TrackContainer>
     </Container>
