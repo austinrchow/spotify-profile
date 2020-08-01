@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import spotifyWebApi from "../spotify.js";
-import { grey } from "color-name";
 
 const Container = styled.div`
   display: flex;
   background-color: #181818;
   height: 100%;
+  min-height: 100vh;
   width: 100vw;
 `;
 
@@ -41,6 +41,10 @@ const TrackInfo = styled.div`
   margin-left: 1vw;
 `;
 
+const LoadingPage = () => {
+  return <div> Loading </div>;
+};
+
 const TrackList = (props) => {
   console.log(props.tracks);
   const tracks = props.tracks;
@@ -53,6 +57,7 @@ const TrackList = (props) => {
       </TrackInfo>
     </TrackDisplay>
   ));
+
   return <ul>{trackItems}</ul>;
 };
 
