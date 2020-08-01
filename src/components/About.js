@@ -3,7 +3,8 @@ import styled from "styled-components";
 
 const Container = styled.div`
   background-color: #181818;
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
   width: 100vw;
   margin-left: 150px;
   display: flex;
@@ -16,7 +17,7 @@ const InformationContainer = styled.div`
   color: white;
   width: 35vw;
   margin-top: 7vh;
-  height: 100vh;
+  height: 100%;
 `;
 
 const Title = styled.div`

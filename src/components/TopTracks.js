@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import spotifyWebApi from "../spotify.js";
 import "../App.css";
+
 const Container = styled.div`
   display: flex;
   background-color: #181818;
@@ -43,8 +44,9 @@ const TrackInfo = styled.div`
   flex-direction: column;
   color: white;
   align-items: flex-start;
+  justify-content: center;
   width: 100%;
-  margin-left: 1vw;
+  margin-left: 2vw;
 `;
 
 // child of track container
@@ -64,21 +66,46 @@ const TimeDisplay = styled.div`
   color: grey;
 `;
 
+const addToQueue = (event) => {
+  // check if is it currently playing
+  let params = [event.target.id];
+  console.log(params);
+  console.log(typeof params[0]);
+  spotifyWebApi.addToMySavedTracks([event.target.id]).then(
+    function (data) {
+      console.log(data);
+    },
+    function (err) {
+      console.error(err);
+    }
+  );
+};
+
 const TrackList = (props) => {
   const tracks = props.tracks;
-  const trackItems = tracks.map((track, i) => (
-    <TrackDisplay key={track.id}>
+  const trackItems = tracks.map((track) => (
+    <TrackDisplay
+      uri={track.uri}
+      key={track.id}
+      //   onClick={(event) => playTrack(props, event)}
+    >
       <TrackImg src={track.album.images[0].url} />
       <TrackInfo>
         <div>{track.name}</div>
         <div style={{ color: "grey" }}>{track.artists[0].name}</div>
       </TrackInfo>
+      <button id={track.id} onClick={(event) => addToQueue(event)}>
+        ADD
+      </button>
     </TrackDisplay>
   ));
 
   return <ul>{trackItems}</ul>;
 };
 
+// calls the spotify get top tracks api to get the top 50 tracks for the user
+// there are 3 time durations: short (1 month), medium (6 months), and long (all time)
+// updates the track state, which is rendered in the TrackList component
 function getTracks(props, event, term) {
   spotifyWebApi.getMyTopTracks({ limit: 50, time_range: term }).then(
     function (data) {
@@ -120,12 +147,14 @@ const TimeRanges = (props) => {
     </Times>
   );
 };
+
 const TopTracks = () => {
   const [tracks, setTracks] = useState([]);
   const [selected, setSelected] = useState("long_term");
   useEffect(() => {
     spotifyWebApi.getMyTopTracks({ limit: 50, time_range: "long_term" }).then(
       function (data) {
+        console.log(data.items);
         setTracks(data.items);
       },
       function (err) {
