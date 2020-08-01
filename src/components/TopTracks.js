@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import spotifyWebApi from "../spotify.js";
-
+import "../App.css";
 const Container = styled.div`
   display: flex;
   background-color: #181818;
@@ -10,6 +10,7 @@ const Container = styled.div`
   width: 100vw;
 `;
 
+// child of container
 const TrackContainer = styled.div`
   margin-left: 150px;
   margin-top: 4vh;
@@ -21,6 +22,7 @@ const TrackContainer = styled.div`
   width: 100vw;
 `;
 
+// child of track container
 const TrackDisplay = styled.li`
   display: flex;
   flex-direction: row;
@@ -28,11 +30,14 @@ const TrackDisplay = styled.li`
   margin-bottom: 4vh;
   width: 50vw;
 `;
+
+// child of track display
 const TrackImg = styled.img`
   height: 80px;
   width: 80px;
 `;
 
+// child of track display
 const TrackInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -42,6 +47,7 @@ const TrackInfo = styled.div`
   margin-left: 1vw;
 `;
 
+// child of track container
 const Times = styled.div`
   display: flex;
   flex-direction: row;
@@ -51,6 +57,7 @@ const Times = styled.div`
   margin-bottom: 4vh;
 `;
 
+// child of times
 const TimeDisplay = styled.div`
   font-size: 18px;
   font-weight: 500;
@@ -58,7 +65,6 @@ const TimeDisplay = styled.div`
 `;
 
 const TrackList = (props) => {
-  console.log(props.tracks);
   const tracks = props.tracks;
   const trackItems = tracks.map((track, i) => (
     <TrackDisplay key={track.id}>
@@ -73,27 +79,42 @@ const TrackList = (props) => {
   return <ul>{trackItems}</ul>;
 };
 
-function getTracks(setTracks, term) {
+function getTracks(props, event, term) {
   spotifyWebApi.getMyTopTracks({ limit: 50, time_range: term }).then(
     function (data) {
-      setTracks(data.items);
+      props.setTracks(data.items);
     },
     function (err) {
       console.error(err);
     }
   );
+  document.getElementById(props.selected).classList.remove("active");
+  event.target.classList.add("active");
+  props.setSelected(event.target.id);
 }
 
 const TimeRanges = (props) => {
   return (
-    <Times>
-      <TimeDisplay onClick={() => getTracks(props.setTracks, "long_term")}>
+    <Times id="times">
+      <TimeDisplay
+        id="long_term"
+        className="time_display active"
+        onClick={(event) => getTracks(props, event, "long_term")}
+      >
         All Time
       </TimeDisplay>
-      <TimeDisplay onClick={() => getTracks(props.setTracks, "medium_term")}>
+      <TimeDisplay
+        id="medium_term"
+        className="time_display"
+        onClick={(event) => getTracks(props, event, "medium_term")}
+      >
         Last 6 Months
       </TimeDisplay>
-      <TimeDisplay onClick={() => getTracks(props.setTracks, "short_term")}>
+      <TimeDisplay
+        id="short_term"
+        className="time_display"
+        onClick={(event) => getTracks(props, event, "short_term")}
+      >
         Last Month
       </TimeDisplay>
     </Times>
@@ -101,16 +122,27 @@ const TimeRanges = (props) => {
 };
 const TopTracks = () => {
   const [tracks, setTracks] = useState([]);
-
+  const [selected, setSelected] = useState("long_term");
   useEffect(() => {
-    getTracks(setTracks, "long_term");
+    spotifyWebApi.getMyTopTracks({ limit: 50, time_range: "long_term" }).then(
+      function (data) {
+        setTracks(data.items);
+      },
+      function (err) {
+        console.error(err);
+      }
+    );
   }, []);
 
   return (
     <Container>
       <TrackContainer>
         <h1 style={{ color: "white" }}>Top Tracks</h1>
-        <TimeRanges setTracks={setTracks} />
+        <TimeRanges
+          setTracks={setTracks}
+          selected={selected}
+          setSelected={setSelected}
+        />
 
         <TrackList tracks={tracks} />
       </TrackContainer>

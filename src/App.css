@@ -11,3 +11,8 @@
   background-color: #181818;
   border-left: 7px solid#1db954;
 }
+
+.active {
+  color: white !important;
+  border-bottom: 2px solid white;
+}
