@@ -9,12 +9,11 @@ const Container = styled.div`
   width: 100vw;
 `;
 
-const UserInformation = styled.div`
+const UserContainer = styled.div`
   margin-left: 150px;
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: #181818;
   height: 100vh;
   width: 100vw;
 `;
@@ -65,12 +64,12 @@ const User = () => {
 
   return (
     <Container>
-      <UserInformation>
+      <UserContainer>
         <UserImageCropper>
           <UserImage src={displayImage} />
         </UserImageCropper>
         <UserDisplayName> {displayName} </UserDisplayName>
-      </UserInformation>
+      </UserContainer>
     </Container>
   );
 };

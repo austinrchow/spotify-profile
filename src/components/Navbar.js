@@ -57,6 +57,7 @@ const NavItem = styled.ul`
 const NavItemText = styled.span`
   color: white;
   padding: 0;
+  font-size: 14px;
 `;
 
 const Navbar = () => {
