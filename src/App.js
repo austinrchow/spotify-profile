@@ -3,8 +3,10 @@ import "./App.css";
 import Login from "./components/Login.js";
 import Profile from "./components/Profile.js";
 import spotifyWebApi from "./spotify.js";
+import queryString from "query-string";
 
 function getHashParams() {
+  console.log("window location: ", window.location);
   var hashParams = {};
   var e,
     r = /([^&;=]+)=?([^&;]*)/g,
@@ -12,6 +14,7 @@ function getHashParams() {
   while ((e = r.exec(q))) {
     hashParams[e[1]] = decodeURIComponent(e[2]);
   }
+  console.log("hash param: ", hashParams);
   return hashParams;
 }
 
@@ -42,14 +45,17 @@ function getHashParams() {
 
 function App() {
   // get token here TODO: refresh token
-  const params = getHashParams();
+  const params = queryString.parse(window.location.search); // getHashParams();
+  console.log(params);
   const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false);
-  useEffect(() => {
-    const params = getHashParams();
-    if (params.access.token) {
-      setLoggedIn(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const params = getHashParams();
+  //   if (params.access_token) {
+  //     console.log(params);
+  //     spotifyWebApi.setAccessToken(params.access_token);
+  //     setLoggedIn(true);
+  //   }
+  // }, []);
   // const [nowPlaying, setNowPlaying] = useState({
   //   name: "Not Checked",
   //   image: "",

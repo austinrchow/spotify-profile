@@ -3,9 +3,11 @@ import React, { useState, useEffect } from "react";
 const Login = () => {
   return (
     <div>
-      <a href="http://localhost:8888/login">
-        <button>Login With Spotify</button>
-      </a>
+      {/* <a href="http://localhost:8888/login"> */}
+      <button onClick={() => (window.location = "http://localhost:8888/login")}>
+        Login With Spotify
+      </button>
+      {/* </a> */}
       Hello
     </div>
   );
