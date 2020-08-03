@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 const login_url =
   process.env.NODE_ENV !== "production"
     ? "http://localhost:8888/login"
-    : "https://spotify-prof-backend.herokuapp.com/login";
+    : "https://spotify-prof.herokuapp.com/login";
 const Login = () => {
   return (
     <div>
