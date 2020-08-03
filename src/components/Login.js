@@ -6,6 +6,7 @@ const Login = () => {
       <a href="http://localhost:8888/login">
         <button>Login With Spotify</button>
       </a>
+      Hello
     </div>
   );
 };
