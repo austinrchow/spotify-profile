@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import spotifyWebApi from "../spotify.js";
+import { longStackSupport } from "q";
 
 const Container = styled.div`
   display: flex;
@@ -44,6 +45,14 @@ const UserDisplayName = styled.div`
   }
 `;
 
+function logout() {
+  //   console.log(window.localStorage);
+  // window.localStorage.removeItem("spotify_token_timestamp");
+  // window.localStorage.removeItem("spotify_access_token");
+  // window.localStorage.removeItem("spotify_refresh_token");
+  window.location.reload();
+}
+
 const User = () => {
   const [displayName, setDisplayName] = useState("");
   const [displayImage, setDisplayImage] = useState("");
@@ -69,6 +78,7 @@ const User = () => {
           <UserImage src={displayImage} />
         </UserImageCropper>
         <UserDisplayName> {displayName} </UserDisplayName>
+        <button onClick={() => logout()}>Logout </button>
       </UserContainer>
     </Container>
   );

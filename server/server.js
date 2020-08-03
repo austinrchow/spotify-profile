@@ -7,9 +7,6 @@ let app = express();
 let redirect_uri = process.env.REDIRECT_URI || "http://localhost:8888/callback";
 
 app.get("/login", function (req, res) {
-  console.log("I am here");
-  console.log(process.env.SPOTIFY_CLIENT_ID);
-  console.log(redirect_uri);
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
       querystring.stringify({
@@ -18,6 +15,7 @@ app.get("/login", function (req, res) {
         scope:
           "user-read-private user-library-read user-library-modify user-read-email user-read-recently-played user-read-playback-state user-top-read user-follow-read user-follow-modify user-modify-playback-state playlist-read-private playlist-read-collaborative playlist-modify-public",
         redirect_uri,
+        show_dialog: true,
       })
   );
 });
