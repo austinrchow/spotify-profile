@@ -44,7 +44,12 @@ function App() {
   // get token here TODO: refresh token
   const params = getHashParams();
   const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false);
-
+  useEffect(() => {
+    const params = getHashParams();
+    if (params.access.token) {
+      setLoggedIn(true);
+    }
+  }, []);
   // const [nowPlaying, setNowPlaying] = useState({
   //   name: "Not Checked",
   //   image: "",
