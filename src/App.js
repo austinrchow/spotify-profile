@@ -56,7 +56,8 @@ function App() {
 
   return (
     <div className="App">
-      {loggedIn ? <Profile /> : <Login />}
+      <Profile />
+      {/* {loggedIn ? <Profile /> : <Login />} */}
       {/* Hello
       <a href="http://localhost:8888/">
         <button>Login With Spotify</button>
