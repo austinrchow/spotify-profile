@@ -8,7 +8,7 @@ const Login = () => {
   return (
     <div>
       {/* <a href="http://localhost:8888/login"> */}
-      <button onClick={() => (window.location = { login_url })}>
+      <button onClick={() => (window.location = login_url)}>
         Login With Spotify
       </button>
       {/* </a> */}
