@@ -203,7 +203,7 @@ const TopTracks = () => {
   spotifyWebApi.getMyDevices().then(
     function (data) {
       let device = data.devices.filter(function (t) {
-        return t.name.localeCompare("Spotify Profile") === 0;
+        return t.name.localeCompare("Your Spotify Profile") === 0;
       });
       setID(device[0].id);
     },

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import Login from "./components/Login.js";
 import Profile from "./components/Profile.js";
 import spotifyWebApi from "./spotify.js";
 import queryString from "query-string";
+import { access } from "fs";
 
 function getHashParams() {
   console.log("window location: ", window.location);
@@ -43,15 +44,99 @@ function getHashParams() {
 //     );
 // }
 
+const checkForPlayer = (access_token, setIsCheckingPlayer) => {
+  if (window.Spotify !== null) {
+    setIsCheckingPlayer(false);
+    console.log("in call back");
+    const token = access_token;
+    console.log(token);
+    const player = new window.Spotify.Player({
+      name: "Your Spotify Profile",
+      getOAuthToken: (cb) => {
+        cb(token);
+      },
+    });
+    // Error handling
+    player.addListener("initialization_error", ({ message }) => {
+      console.error(message);
+    });
+    player.addListener("authentication_error", ({ message }) => {
+      console.error(message);
+    });
+    player.addListener("account_error", ({ message }) => {
+      console.error(message);
+    });
+    player.addListener("playback_error", ({ message }) => {
+      console.error(message);
+    });
+    // Playback status updates
+    player.addListener("player_state_changed", (state) => {
+      console.log(state);
+    });
+    // Ready
+    player.addListener("ready", ({ device_id }) => {
+      console.log("Ready with Device ID", device_id);
+    });
+    // Not Ready
+    player.addListener("not_ready", ({ device_id }) => {
+      console.log("Device ID has gone offline", device_id);
+    });
+    // Connect to the player!
+    player.connect();
+  }
+};
+
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  // Remember the latest function.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      console.log("I get into here");
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
+
 function App() {
   // get token here TODO: refresh token
-  const params = getHashParams(); //queryString.parse(window.location.search); // getHashParams();
+  const params = getHashParams();
+  const [delay, setDelay] = useState(1000);
+  const [isCheckingPlayer, setIsCheckingPlayer] = useState(true);
   console.log("params:", params);
-  const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false);
 
+  // check to see if we need to refresh token
+
+  const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false);
   if (params.access_token) {
     spotifyWebApi.setAccessToken(params.access_token);
   }
+
+  useInterval(
+    () => {
+      // Your custom logic here
+      checkForPlayer(params.access_token, setIsCheckingPlayer);
+    },
+    isCheckingPlayer ? delay : null
+  );
+
+  // useEffect(() => {
+  //   if (params.access_token) {
+  //     let interval = setInterval(() => {
+  //       checkForPlayer(params.access_token, setPlayerCheckInterval);
+  //     }, 1000);
+  //     return () => clearInterval(interval);
+  //   }
+  // });
 
   return (
     <div className="App">
