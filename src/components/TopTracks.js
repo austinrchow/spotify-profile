@@ -22,6 +22,7 @@ const TrackContainer = styled.div`
   background-color: #181818;
   height: 100%;
   width: 100vw;
+  //   pointer-events: none;
 `;
 
 // child of track container
@@ -31,6 +32,7 @@ const TrackDisplay = styled.li`
   align-items: left;
   margin-bottom: 4vh;
   width: 50vw;
+  //   pointer-events: none;
 
   :hover .img-top {
     display: inline;
@@ -86,28 +88,64 @@ const addToQueue = (event) => {
   );
 };
 
+const play = (e, uri, id) => {
+  spotifyWebApi
+    .play({
+      device_id: id,
+      uris: [uri],
+    })
+    .then(
+      function (data) {
+        console.log(data);
+      },
+      function (err) {
+        console.error(err);
+      }
+    );
+};
+
+const pause = (e, id) => {
+  spotifyWebApi
+    .pause({
+      device_id: id,
+    })
+    .then(
+      function (data) {
+        console.log(data);
+      },
+      function (err) {
+        console.error(err);
+      }
+    );
+};
+
 const TrackList = (props) => {
   const tracks = props.tracks;
   const trackItems = tracks.map((track) => (
-    <a
-      key={track.id}
-      href={track.external_urls.spotify}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{ borderStyle: "none" }}
-    >
-      <TrackDisplay key={track.id}>
-        <div className="card">
-          <TrackImg src={track.album.images[0].url} />
-          <MdPlay fontSize="45px" color="white" className="img-top" />
-        </div>
+    // <a
+    //   key={track.id}
+    //   href={track.external_urls.spotify}
+    //   target="_blank"
+    //   rel="noopener noreferrer"
+    //   style={{ borderStyle: "none" }}
+    // >
+    <TrackDisplay key={track.id}>
+      <div className="card">
+        {/* <MdPlay fontSize="45px" color="white" className="img-top" /> */}
 
-        <TrackInfo>
-          <div>{track.name}</div>
-          <div style={{ color: "grey" }}>{track.artists[0].name}</div>
-        </TrackInfo>
-      </TrackDisplay>
-    </a>
+        <TrackImg
+          src={track.album.images[0].url}
+          onMouseEnter={(event) => play(event, track.uri, props.id)}
+          onMouseLeave={(event) => pause(event, props.id)}
+        />
+      </div>
+
+      <TrackInfo>
+        <div>{track.name}</div>
+        <div style={{ color: "grey" }}>{track.artists[0].name}</div>
+      </TrackInfo>
+    </TrackDisplay>
+    // </a>
   ));
 
   return <ul>{trackItems}</ul>;
@@ -161,6 +199,19 @@ const TimeRanges = (props) => {
 const TopTracks = () => {
   const [tracks, setTracks] = useState([]);
   const [selected, setSelected] = useState("long_term");
+  const [id, setID] = useState("");
+  spotifyWebApi.getMyDevices().then(
+    function (data) {
+      let device = data.devices.filter(function (t) {
+        return t.name.localeCompare("Spotify Profile") === 0;
+      });
+      setID(device[0].id);
+    },
+    function (err) {
+      console.error(err);
+    }
+  );
+
   useEffect(() => {
     spotifyWebApi.getMyTopTracks({ limit: 50, time_range: "long_term" }).then(
       function (data) {
@@ -183,7 +234,7 @@ const TopTracks = () => {
           setSelected={setSelected}
         />
 
-        <TrackList tracks={tracks} />
+        <TrackList tracks={tracks} id={id} />
       </TrackContainer>
     </Container>
   );

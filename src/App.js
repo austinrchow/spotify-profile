@@ -45,21 +45,9 @@ function getHashParams() {
 
 function App() {
   // get token here TODO: refresh token
-  const params = queryString.parse(window.location.search); // getHashParams();
-  console.log(params);
+  const params = getHashParams(); //queryString.parse(window.location.search); // getHashParams();
+  console.log("params:", params);
   const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false);
-  // useEffect(() => {
-  //   const params = getHashParams();
-  //   if (params.access_token) {
-  //     console.log(params);
-  //     spotifyWebApi.setAccessToken(params.access_token);
-  //     setLoggedIn(true);
-  //   }
-  // }, []);
-  // const [nowPlaying, setNowPlaying] = useState({
-  //   name: "Not Checked",
-  //   image: "",
-  // });
 
   if (params.access_token) {
     spotifyWebApi.setAccessToken(params.access_token);
