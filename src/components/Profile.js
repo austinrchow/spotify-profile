@@ -7,6 +7,7 @@ import Recent from "./Recent.js";
 import Navbar from "./Navbar.js";
 import About from "./About.js";
 import styled from "styled-components";
+import spotifyWebApi from "../spotify.js";
 
 const Container = styled.div`
   display: flex;
