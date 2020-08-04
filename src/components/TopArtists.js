@@ -16,8 +16,8 @@ const play = (event) => {
     .getMyDevices()
     .then(
       function (data) {
-        return data.devices.map(function (t) {
-          return t.id;
+        return data.devices.filter(function (t) {
+          return t.name.localeCompare("Spotify Profile") === 0;
         });
       },
       function (err) {
@@ -25,39 +25,63 @@ const play = (event) => {
       }
     )
     .then(function (devices) {
-      console.log("here", devices[1]);
-      spotifyWebApi.transferMyPlayback([devices[1]]).then(
-        function (data) {
-          console.log(data);
-        },
-        function (err) {
-          console.error(err);
-        }
-      );
+      spotifyWebApi
+        .play({
+          device_id: devices[0].id,
+          uris: ["spotify:track:3pXF1nA74528Edde4of9CC"],
+        })
+        .then(
+          function (data) {
+            console.log(data);
+          },
+          function (err) {
+            console.error(err);
+          }
+        );
     });
 };
 
-const playNow = (event) => {
-  console.log("in play now", event);
-  spotifyWebApi.play({ uris: ["spotify:track:3pXF1nA74528Edde4of9CC"] }).then(
-    function (data) {
-      console.log(data);
-    },
-    function (err) {
-      console.error(err);
-    }
-  );
-};
+// const playNow = (event) => {
+//   console.log("in play now", event);
+//   spotifyWebApi
+//     .play({
+//       device_id: devices[1],
+//       uris: ["spotify:track:3pXF1nA74528Edde4of9CC"],
+//     })
+//     .then(
+//       function (data) {
+//         console.log(data);
+//       },
+//       function (err) {
+//         console.error(err);
+//       }
+//     );
+// };
 
 const TopArtists = () => {
+  const [devices, setDevices] = useState("");
+
+  useEffect(() => {
+    spotifyWebApi.getMyDevices().then(
+      function (data) {
+        for (var i; i < data.devices.length; i++) {
+          console.log(data.devices[i]);
+        }
+      },
+      function (err) {
+        console.error(err);
+      }
+    );
+  }, []);
+
   return (
     <Container>
-      <button onClick={(event) => play()} style={{ marginLeft: "150px" }}>
+      hello
+      {/* <button onClick={(event) => play()} style={{ marginLeft: "150px" }}>
         Top Artists
-      </button>
-
+      </button> */}
       <div
-        onMouseOver={(event) => playNow()}
+        onMouseOver={(event) => play()}
         style={{ marginLeft: "150px", color: "white" }}
       >
         Top Artists
