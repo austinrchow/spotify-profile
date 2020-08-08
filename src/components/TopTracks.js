@@ -31,9 +31,7 @@ const TrackDisplay = styled.li`
   flex-direction: row;
   align-items: left;
   margin-bottom: 4vh;
-  width: 50vw;
-  //   pointer-events: none;
-
+  width: 50%;
   :hover .img-top {
     display: inline;
   }
@@ -62,7 +60,7 @@ const Times = styled.div`
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
-  width: 50vw;
+  width: 50%;
   margin-bottom: 4vh;
 `;
 
@@ -88,11 +86,12 @@ const addToQueue = (event) => {
   );
 };
 
-const play = (e, uri, id) => {
+const play = (e, track, props) => {
   spotifyWebApi
     .play({
-      device_id: id,
-      uris: [uri],
+      device_id: props.id,
+      uris: [track.uri],
+      position_ms: 45000,
     })
     .then(
       function (data) {
@@ -102,12 +101,13 @@ const play = (e, uri, id) => {
         console.error(err);
       }
     );
+  props.setCurrentTrack(track);
 };
 
-const pause = (e, id) => {
+const pause = (e, track, props) => {
   spotifyWebApi
     .pause({
-      device_id: id,
+      device_id: props.id,
     })
     .then(
       function (data) {
@@ -117,6 +117,7 @@ const pause = (e, id) => {
         console.error(err);
       }
     );
+  props.setCurrentTrack(null);
 };
 
 const TrackList = (props) => {
@@ -135,20 +136,35 @@ const TrackList = (props) => {
 
         <TrackImg
           src={track.album.images[0].url}
-          onMouseEnter={(event) => play(event, track.uri, props.id)}
-          onMouseLeave={(event) => pause(event, props.id)}
+          onMouseEnter={(event) => play(event, track, props)}
+          onMouseLeave={(event) => pause(event, track, props)}
         />
       </div>
 
-      <TrackInfo>
+      {/* <TrackInfo>
         <div>{track.name}</div>
         <div style={{ color: "grey" }}>{track.artists[0].name}</div>
-      </TrackInfo>
+      </TrackInfo> */}
     </TrackDisplay>
     // </a>
   ));
 
   return <ul>{trackItems}</ul>;
+};
+
+const TrackShowcase = (props) => {
+  return (
+    <div className="trackShowcase">
+      {
+        props.currentTrack && (
+          <TrackImg src={props.currentTrack.album.images[0].url} />
+        )
+        //   <div>{props.currentTrack.name}</div>
+        //     <div style={{ color: "grey" }}>{props.currentTrack.artists[0].name}</div>
+        // </div>
+      }
+    </div>
+  );
 };
 
 // calls the spotify get top tracks api to get the top 50 tracks for the user
@@ -199,6 +215,7 @@ const TimeRanges = (props) => {
 const TopTracks = () => {
   const [tracks, setTracks] = useState([]);
   const [selected, setSelected] = useState("long_term");
+  const [currentTrack, setCurrentTrack] = useState(null);
   const [id, setID] = useState("");
   spotifyWebApi.getMyDevices().then(
     function (data) {
@@ -233,8 +250,14 @@ const TopTracks = () => {
           selected={selected}
           setSelected={setSelected}
         />
-
-        <TrackList tracks={tracks} id={id} />
+        <div className="display">
+          <TrackList
+            tracks={tracks}
+            id={id}
+            setCurrentTrack={setCurrentTrack}
+          />
+          <TrackShowcase currentTrack={currentTrack} id={id} />
+        </div>
       </TrackContainer>
     </Container>
   );
