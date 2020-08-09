@@ -49,13 +49,24 @@ a:active {
 .display {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   width: 100vw;
 }
 
-.trackShowcase {
+.trackDisplay {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: left;
+  width: 750px;
+  min-width: 750px;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* .trackShowcase {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 50%;
-}
+  width: 200px;
+} */

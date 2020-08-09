@@ -3,6 +3,7 @@ import styled from "styled-components";
 import spotifyWebApi from "../spotify.js";
 import "../App.css";
 import MdPlay from "react-ionicons/lib/MdPlay";
+import $ from "jquery";
 
 const Container = styled.div`
   display: flex;
@@ -27,20 +28,16 @@ const TrackContainer = styled.div`
 
 // child of track container
 const TrackDisplay = styled.li`
-  display: flex;
-  flex-direction: row;
-  align-items: left;
-  margin-bottom: 4vh;
-  width: 50%;
-  :hover .img-top {
-    display: inline;
-  }
+  margin: 0;
+  padding: 0;
 `;
 
 // child of track display
 const TrackImg = styled.img`
-  height: 80px;
-  width: 80px;
+  height: 90px;
+  width: 90px;
+  margin: 0;
+  padding: 0;
 `;
 
 // child of track display
@@ -87,6 +84,11 @@ const addToQueue = (event) => {
 };
 
 const play = (e, track, props) => {
+  //   console.log(document.querySelector('[title="Play"]'));
+
+  //   var x = $("#myFrame").find("button");
+  //   console.log(x);
+
   spotifyWebApi
     .play({
       device_id: props.id,
@@ -105,51 +107,33 @@ const play = (e, track, props) => {
 };
 
 const pause = (e, track, props) => {
-  spotifyWebApi
-    .pause({
-      device_id: props.id,
-    })
-    .then(
-      function (data) {
-        console.log(data);
-      },
-      function (err) {
-        console.error(err);
-      }
-    );
+  //   spotifyWebApi
+  //     .pause({
+  //       device_id: props.id,
+  //     })
+  //     .then(
+  //       function (data) {
+  //         console.log(data);
+  //       },
+  //       function (err) {
+  //         console.error(err);
+  //       }
+  //     );
   props.setCurrentTrack(null);
 };
 
 const TrackList = (props) => {
   const tracks = props.tracks;
   const trackItems = tracks.map((track) => (
-    // <a
-    //   key={track.id}
-    //   href={track.external_urls.spotify}
-    //   target="_blank"
-    //   rel="noopener noreferrer"
-    //   style={{ borderStyle: "none" }}
-    // >
-    <TrackDisplay key={track.id}>
-      <div className="card">
-        {/* <MdPlay fontSize="45px" color="white" className="img-top" /> */}
-
-        <TrackImg
-          src={track.album.images[0].url}
-          onMouseEnter={(event) => play(event, track, props)}
-          onMouseLeave={(event) => pause(event, track, props)}
-        />
-      </div>
-
-      {/* <TrackInfo>
-        <div>{track.name}</div>
-        <div style={{ color: "grey" }}>{track.artists[0].name}</div>
-      </TrackInfo> */}
-    </TrackDisplay>
-    // </a>
+    <TrackImg
+      src={track.album.images[0].url}
+      onMouseEnter={(event) => play(event, track, props)}
+      onMouseLeave={(event) => pause(event, track, props)}
+      key={track.id}
+    />
   ));
 
-  return <ul>{trackItems}</ul>;
+  return <ul className="trackDisplay">{trackItems}</ul>;
 };
 
 const TrackShowcase = (props) => {
@@ -157,12 +141,25 @@ const TrackShowcase = (props) => {
     <div className="trackShowcase">
       {
         props.currentTrack && (
-          <TrackImg src={props.currentTrack.album.images[0].url} />
+          <img
+            style={{ width: "400px", height: "400px" }}
+            src={props.currentTrack.album.images[0].url}
+          />
         )
         //   <div>{props.currentTrack.name}</div>
         //     <div style={{ color: "grey" }}>{props.currentTrack.artists[0].name}</div>
         // </div>
       }
+      {/* {props.currentTrack && (
+        <iframe
+          src={"https://open.spotify.com/embed/track/" + props.currentTrack.id}
+          width="300"
+          height="380"
+          frameborder="0"
+          allowtransparency="true"
+          allow="encrypted-media"
+        ></iframe>
+      )} */}
     </div>
   );
 };
@@ -258,9 +255,27 @@ const TopTracks = () => {
           />
           <TrackShowcase currentTrack={currentTrack} id={id} />
         </div>
+        <iframe
+          src="https://open.spotify.com/embed/track/7zFXmv6vqI4qOt4yGf3jYZ"
+          width="300"
+          height="80"
+          frameBorder="0"
+          allowtransparency="true"
+          allow="encrypted-media"
+        ></iframe>
       </TrackContainer>
     </Container>
   );
 };
 
+// function clickButton() {
+//   console.log("hello");
+//   var node = document.querySelector('[title="Title"]');
+//   console.log(node);
+//   console.log(document.getElementsByTagName("button"));
+//   var iframe = document.getElementById("myFrame");
+//   console.log(iframe);
+//   var elmnt = iframe.contentWindow.document.getElementsByTagName("H1")[0];
+//   console.log(elmnt);
+// }
 export default TopTracks;
