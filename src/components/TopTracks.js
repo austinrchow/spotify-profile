@@ -142,14 +142,21 @@ const TrackShowcase = (props) => {
       {
         props.currentTrack && (
           <img
-            style={{ width: "400px", height: "400px" }}
+            style={{ width: "500px", height: "500px" }}
             src={props.currentTrack.album.images[0].url}
           />
         )
-        //   <div>{props.currentTrack.name}</div>
-        //     <div style={{ color: "grey" }}>{props.currentTrack.artists[0].name}</div>
+
         // </div>
       }
+      {props.currentTrack && (
+        <div>
+          <div>{props.currentTrack.name}</div>
+          <div style={{ color: "grey" }}>
+            {props.currentTrack.artists[0].name}
+          </div>
+        </div>
+      )}
       {/* {props.currentTrack && (
         <iframe
           src={"https://open.spotify.com/embed/track/" + props.currentTrack.id}
