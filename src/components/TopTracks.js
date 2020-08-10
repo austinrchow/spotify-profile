@@ -83,30 +83,33 @@ const addToQueue = (event) => {
   );
 };
 
-const play = (e, track, props) => {
-  //   console.log(document.querySelector('[title="Play"]'));
+const play = (e, track, props, setAudio) => {
+  console.log(track.preview_url);
+  setAudio(new Audio(track.preview_url));
+  //   audio.volume = volume;
 
   //   var x = $("#myFrame").find("button");
   //   console.log(x);
 
-  spotifyWebApi
-    .play({
-      device_id: props.id,
-      uris: [track.uri],
-      position_ms: 45000,
-    })
-    .then(
-      function (data) {
-        console.log(data);
-      },
-      function (err) {
-        console.error(err);
-      }
-    );
+  //   spotifyWebApi
+  //     .play({
+  //       device_id: props.id,
+  //       uris: [track.uri],
+  //       position_ms: 45000,
+  //     })
+  //     .then(
+  //       function (data) {
+  //         console.log(data);
+  //       },
+  //       function (err) {
+  //         console.error(err);
+  //       }
+  //     );
   props.setCurrentTrack(track);
 };
 
-const pause = (e, track, props) => {
+const pause = (e, track, props, audio) => {
+  audio.pause();
   //   spotifyWebApi
   //     .pause({
   //       device_id: props.id,
@@ -123,12 +126,19 @@ const pause = (e, track, props) => {
 };
 
 const TrackList = (props) => {
+  const [audio, setAudio] = useState(null);
+  useEffect(() => {
+    if (audio) {
+      audio.autoplay = false;
+      audio.play();
+    }
+  }, [audio]);
   const tracks = props.tracks;
   const trackItems = tracks.map((track) => (
     <TrackImg
       src={track.album.images[0].url}
-      onMouseEnter={(event) => play(event, track, props)}
-      onMouseLeave={(event) => pause(event, track, props)}
+      onMouseEnter={(event) => play(event, track, props, setAudio)}
+      onMouseLeave={(event) => pause(event, track, props, audio)}
       key={track.id}
     />
   ));
@@ -262,14 +272,6 @@ const TopTracks = () => {
           />
           <TrackShowcase currentTrack={currentTrack} id={id} />
         </div>
-        <iframe
-          src="https://open.spotify.com/embed/track/7zFXmv6vqI4qOt4yGf3jYZ"
-          width="300"
-          height="80"
-          frameBorder="0"
-          allowtransparency="true"
-          allow="encrypted-media"
-        ></iframe>
       </TrackContainer>
     </Container>
   );
