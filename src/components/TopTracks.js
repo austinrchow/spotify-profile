@@ -134,12 +134,14 @@ const TrackList = (props) => {
     }
   }, [audio]);
   const tracks = props.tracks;
-  const trackItems = tracks.map((track) => (
+  console.log("tracks here", tracks);
+  console.log(typeof tracks);
+  const trackItems = tracks.map((track, index) => (
     <TrackImg
       src={track.album.images[0].url}
       onMouseEnter={(event) => play(event, track, props, setAudio)}
       onMouseLeave={(event) => pause(event, track, props, audio)}
-      key={track.id}
+      key={index}
     />
   ));
 
@@ -149,34 +151,22 @@ const TrackList = (props) => {
 const TrackShowcase = (props) => {
   return (
     <div className="trackShowcase">
-      {
-        props.currentTrack && (
-          <img
-            style={{ width: "500px", height: "500px" }}
-            src={props.currentTrack.album.images[0].url}
-          />
-        )
-
-        // </div>
-      }
+      {props.currentTrack && (
+        <img
+          style={{ width: "500px", height: "500px" }}
+          src={props.currentTrack.album.images[0].url}
+        />
+      )}
       {props.currentTrack && (
         <div>
-          <div>{props.currentTrack.name}</div>
-          <div style={{ color: "grey" }}>
+          <div style={{ color: "grey", fontSize: 18 }}>
+            {props.currentTrack.name}
+          </div>
+          <div style={{ color: "grey", fontSize: 14 }}>
             {props.currentTrack.artists[0].name}
           </div>
         </div>
       )}
-      {/* {props.currentTrack && (
-        <iframe
-          src={"https://open.spotify.com/embed/track/" + props.currentTrack.id}
-          width="300"
-          height="380"
-          frameborder="0"
-          allowtransparency="true"
-          allow="encrypted-media"
-        ></iframe>
-      )} */}
     </div>
   );
 };
@@ -185,14 +175,25 @@ const TrackShowcase = (props) => {
 // there are 3 time durations: short (1 month), medium (6 months), and long (all time)
 // updates the track state, which is rendered in the TrackList component
 function getTracks(props, event, term) {
-  spotifyWebApi.getMyTopTracks({ limit: 50, time_range: term }).then(
-    function (data) {
-      props.setTracks(data.items);
-    },
-    function (err) {
-      console.error(err);
-    }
-  );
+  spotifyWebApi
+    .getMyTopTracks({ limit: 50, time_range: term })
+    .then(function (data) {
+      return data.items.map(function (t) {
+        return t.id;
+      });
+    })
+    .then(function (trackIds) {
+      return spotifyWebApi.getTracks([], {
+        ids: trackIds,
+        market: "from_token",
+      });
+    })
+    .then(function (tracksInfo) {
+      props.setTracks(tracksInfo.tracks);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
   document.getElementById(props.selected).classList.remove("active");
   event.target.classList.add("active");
   props.setSelected(event.target.id);
@@ -244,15 +245,25 @@ const TopTracks = () => {
   );
 
   useEffect(() => {
-    spotifyWebApi.getMyTopTracks({ limit: 50, time_range: "long_term" }).then(
-      function (data) {
-        console.log(data.items);
-        setTracks(data.items);
-      },
-      function (err) {
-        console.error(err);
-      }
-    );
+    spotifyWebApi
+      .getMyTopTracks({ limit: 50, time_range: "long_term" })
+      .then(function (data) {
+        return data.items.map(function (t) {
+          return t.id;
+        });
+      })
+      .then(function (trackIds) {
+        return spotifyWebApi.getTracks([], {
+          ids: trackIds,
+          market: "from_token",
+        });
+      })
+      .then(function (tracksInfo) {
+        setTracks(tracksInfo.tracks);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
   }, []);
 
   return (
@@ -277,14 +288,4 @@ const TopTracks = () => {
   );
 };
 
-// function clickButton() {
-//   console.log("hello");
-//   var node = document.querySelector('[title="Title"]');
-//   console.log(node);
-//   console.log(document.getElementsByTagName("button"));
-//   var iframe = document.getElementById("myFrame");
-//   console.log(iframe);
-//   var elmnt = iframe.contentWindow.document.getElementsByTagName("H1")[0];
-//   console.log(elmnt);
-// }
 export default TopTracks;
