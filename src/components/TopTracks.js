@@ -34,8 +34,8 @@ const Display = styled.div`
 
 // child of track display
 const TrackImg = styled.img`
-  height: 80px;
-  width: 80px;
+  height: 100%;
+  width: 100%;
   margin: 0;
   padding: 0;
 `;
@@ -69,38 +69,34 @@ const Term = styled.div`
   color: grey;
 `;
 
-const play = (e, track, props, audio, setAudio, playing, setPlaying) => {
-  let curr_audio = new Audio(track.preview_url);
-  setAudio(curr_audio);
+function play(event, props, track, id) {
+  let audio = document.getElementById(id);
+  audio.play();
   props.setCurrentTrack(track);
-};
+}
 
-const pause = (e, track, props, audio, setAudio, playing, setPlaying) => {
+function pause(event, props, track, id) {
+  let audio = document.getElementById(id);
   audio.pause();
-  props.setCurrentTrack(null);
-};
-
+  props.setCurrentTrack(track);
+}
 const TrackList = (props) => {
-  const [audio, setAudio] = useState(new Audio());
-  const [playing, setPlaying] = useState(false);
-  useEffect(() => {
-    if (audio) {
-      audio.autoplay = false;
-      audio.play();
-    }
-  }, [audio]);
   const tracks = props.tracks;
   const trackItems = tracks.map((track, index) => (
-    <TrackImg
-      src={track.album.images[0].url}
-      onMouseEnter={(event) =>
-        play(event, track, props, audio, setAudio, playing, setPlaying)
-      }
-      onMouseLeave={(event) =>
-        pause(event, track, props, audio, setAudio, playing, setPlaying)
-      }
-      key={index}
-    />
+    <div key={index} style={{ height: "80px", width: "80px" }}>
+      <TrackImg
+        src={track.album.images[0].url}
+        onMouseOver={(event) =>
+          play(event, props, track, "audio_" + String(index))
+        }
+        onMouseOut={(event) =>
+          pause(event, props, track, "audio_" + String(index))
+        }
+      />
+      <audio id={"audio_" + String(index)}>
+        <source src={track.preview_url}></source>
+      </audio>
+    </div>
   ));
 
   return <ul className="trackDisplay">{trackItems}</ul>;
@@ -247,12 +243,11 @@ const TopTracks = () => {
             tracks={tracks}
             id={id}
             setCurrentTrack={setCurrentTrack}
-            // audio={audio}
-            // setAudio={setAudio}
           />
           <TrackShowcase currentTrack={currentTrack} id={id} />
         </Display>
         <TrackInformation currentTrack={currentTrack} id={id} />
+        <audio id="myAudio"></audio>
       </InnerContainer>
     </Container>
   );
