@@ -7,24 +7,27 @@ import Recent from "./Recent.js";
 import Navbar from "./Navbar.js";
 import About from "./About.js";
 import styled from "styled-components";
-import spotifyWebApi from "../spotify.js";
 
 const Container = styled.div`
   display: flex;
   position: relative;
+  background-color: red;
+  width: 100%;
+  height: 100%;
 `;
 
 const Profile = () => {
   return (
     <Router>
       <Container>
+        {/* <Next>div</Next> */}
         <Navbar />
         <Switch>
-          <Route component={About} path="/" exact />
+          {/* <Route component={About} path="/" exact />
           <Route component={User} path="/user" exact />
-          <Route component={TopArtists} path="/artists" />
+          <Route component={TopArtists} path="/artists" /> */}
           <Route component={TopTracks} path="/tracks" />
-          <Route component={Recent} path="/recent" />
+          {/* <Route component={Recent} path="/recent" /> */}
         </Switch>
       </Container>
     </Router>

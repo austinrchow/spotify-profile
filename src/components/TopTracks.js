@@ -10,7 +10,7 @@ const Container = styled.div`
   background-color: #181818;
   height: 100%;
   min-height: 100vh;
-  width: 100vw;
+  width: 1200px;
 `;
 
 // child of container
@@ -22,20 +22,14 @@ const TrackContainer = styled.div`
   flex-direction: column;
   background-color: #181818;
   height: 100%;
-  width: 100vw;
+  width: 100%;
   //   pointer-events: none;
-`;
-
-// child of track container
-const TrackDisplay = styled.li`
-  margin: 0;
-  padding: 0;
 `;
 
 // child of track display
 const TrackImg = styled.img`
-  height: 90px;
-  width: 90px;
+  height: 80px;
+  width: 80px;
   margin: 0;
   padding: 0;
 `;
@@ -134,8 +128,6 @@ const TrackList = (props) => {
     }
   }, [audio]);
   const tracks = props.tracks;
-  console.log("tracks here", tracks);
-  console.log(typeof tracks);
   const trackItems = tracks.map((track, index) => (
     <TrackImg
       src={track.album.images[0].url}
@@ -153,7 +145,7 @@ const TrackShowcase = (props) => {
     <div className="trackShowcase">
       {props.currentTrack && (
         <img
-          style={{ width: "500px", height: "500px" }}
+          style={{ width: "400px", height: "400px" }}
           src={props.currentTrack.album.images[0].url}
         />
       )}
@@ -269,7 +261,7 @@ const TopTracks = () => {
   return (
     <Container>
       <TrackContainer>
-        <h1 style={{ color: "white" }}>Top Tracks</h1>
+        {/* <h1 style={{ color: "white" }}>Top Tracks</h1>
         <TimeRanges
           setTracks={setTracks}
           selected={selected}
@@ -282,7 +274,7 @@ const TopTracks = () => {
             setCurrentTrack={setCurrentTrack}
           />
           <TrackShowcase currentTrack={currentTrack} id={id} />
-        </div>
+        </div> */}
       </TrackContainer>
     </Container>
   );
