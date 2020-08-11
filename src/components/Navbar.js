@@ -22,6 +22,7 @@ const Nav = styled.nav`
   height: 100vh;
   background: #040306;
   padding: 0;
+  z-index: 1;
 
   @media ${device.tablet} {
     height: 10px;

@@ -10,12 +10,13 @@ const Container = styled.div`
   background-color: #181818;
   height: 100%;
   min-height: 100vh;
-  width: 1200px;
+  width: 1300px;
+  padding-left: 200px;
+  margin: 0 auto;
 `;
 
 // child of container
-const TrackContainer = styled.div`
-  margin-left: 150px;
+const InnerContainer = styled.div`
   margin-top: 4vh;
   display: flex;
   align-items: center;
@@ -23,7 +24,12 @@ const TrackContainer = styled.div`
   background-color: #181818;
   height: 100%;
   width: 100%;
-  //   pointer-events: none;
+`;
+
+const Display = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
 `;
 
 // child of track display
@@ -51,12 +57,13 @@ const Times = styled.div`
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
-  width: 50%;
+  width: 100%;
+  margin-top: 2vh;
   margin-bottom: 4vh;
 `;
 
 // child of times
-const TimeDisplay = styled.div`
+const Term = styled.div`
   font-size: 18px;
   font-weight: 500;
   color: grey;
@@ -149,8 +156,15 @@ const TrackShowcase = (props) => {
           src={props.currentTrack.album.images[0].url}
         />
       )}
+    </div>
+  );
+};
+
+const TrackInformation = (props) => {
+  return (
+    <div style={{ width: "100%" }}>
       {props.currentTrack && (
-        <div>
+        <div className="trackInformation">
           <div style={{ color: "grey", fontSize: 18 }}>
             {props.currentTrack.name}
           </div>
@@ -194,27 +208,27 @@ function getTracks(props, event, term) {
 const TimeRanges = (props) => {
   return (
     <Times id="times">
-      <TimeDisplay
+      <Term
         id="long_term"
         className="time_display active"
         onClick={(event) => getTracks(props, event, "long_term")}
       >
         All Time
-      </TimeDisplay>
-      <TimeDisplay
+      </Term>
+      <Term
         id="medium_term"
         className="time_display"
         onClick={(event) => getTracks(props, event, "medium_term")}
       >
         Last 6 Months
-      </TimeDisplay>
-      <TimeDisplay
+      </Term>
+      <Term
         id="short_term"
         className="time_display"
         onClick={(event) => getTracks(props, event, "short_term")}
       >
         Last Month
-      </TimeDisplay>
+      </Term>
     </Times>
   );
 };
@@ -260,22 +274,23 @@ const TopTracks = () => {
 
   return (
     <Container>
-      <TrackContainer>
-        {/* <h1 style={{ color: "white" }}>Top Tracks</h1>
+      <InnerContainer>
+        <h1 style={{ color: "white", width: "100%" }}>Top Tracks</h1>
         <TimeRanges
           setTracks={setTracks}
           selected={selected}
           setSelected={setSelected}
         />
-        <div className="display">
+        <Display>
           <TrackList
             tracks={tracks}
             id={id}
             setCurrentTrack={setCurrentTrack}
           />
           <TrackShowcase currentTrack={currentTrack} id={id} />
-        </div> */}
-      </TrackContainer>
+        </Display>
+        <TrackInformation currentTrack={currentTrack} id={id} />
+      </InnerContainer>
     </Container>
   );
 };
