@@ -69,65 +69,20 @@ const Term = styled.div`
   color: grey;
 `;
 
-const addToQueue = (event) => {
-  // check if is it currently playing
-  let params = [event.target.id];
-  console.log(params);
-  console.log(typeof params[0]);
-  spotifyWebApi.addToMySavedTracks([event.target.id]).then(
-    function (data) {
-      console.log(data);
-    },
-    function (err) {
-      console.error(err);
-    }
-  );
-};
-
-const play = (e, track, props, setAudio) => {
-  console.log(track.preview_url);
-  setAudio(new Audio(track.preview_url));
-  //   audio.volume = volume;
-
-  //   var x = $("#myFrame").find("button");
-  //   console.log(x);
-
-  //   spotifyWebApi
-  //     .play({
-  //       device_id: props.id,
-  //       uris: [track.uri],
-  //       position_ms: 45000,
-  //     })
-  //     .then(
-  //       function (data) {
-  //         console.log(data);
-  //       },
-  //       function (err) {
-  //         console.error(err);
-  //       }
-  //     );
+const play = (e, track, props, audio, setAudio, playing, setPlaying) => {
+  let curr_audio = new Audio(track.preview_url);
+  setAudio(curr_audio);
   props.setCurrentTrack(track);
 };
 
-const pause = (e, track, props, audio) => {
+const pause = (e, track, props, audio, setAudio, playing, setPlaying) => {
   audio.pause();
-  //   spotifyWebApi
-  //     .pause({
-  //       device_id: props.id,
-  //     })
-  //     .then(
-  //       function (data) {
-  //         console.log(data);
-  //       },
-  //       function (err) {
-  //         console.error(err);
-  //       }
-  //     );
   props.setCurrentTrack(null);
 };
 
 const TrackList = (props) => {
-  const [audio, setAudio] = useState(null);
+  const [audio, setAudio] = useState(new Audio());
+  const [playing, setPlaying] = useState(false);
   useEffect(() => {
     if (audio) {
       audio.autoplay = false;
@@ -138,8 +93,12 @@ const TrackList = (props) => {
   const trackItems = tracks.map((track, index) => (
     <TrackImg
       src={track.album.images[0].url}
-      onMouseEnter={(event) => play(event, track, props, setAudio)}
-      onMouseLeave={(event) => pause(event, track, props, audio)}
+      onMouseEnter={(event) =>
+        play(event, track, props, audio, setAudio, playing, setPlaying)
+      }
+      onMouseLeave={(event) =>
+        pause(event, track, props, audio, setAudio, playing, setPlaying)
+      }
       key={index}
     />
   ));
@@ -238,6 +197,7 @@ const TopTracks = () => {
   const [selected, setSelected] = useState("long_term");
   const [currentTrack, setCurrentTrack] = useState(null);
   const [id, setID] = useState("");
+
   spotifyWebApi.getMyDevices().then(
     function (data) {
       let device = data.devices.filter(function (t) {
@@ -265,6 +225,7 @@ const TopTracks = () => {
         });
       })
       .then(function (tracksInfo) {
+        console.log(tracksInfo);
         setTracks(tracksInfo.tracks);
       })
       .catch(function (error) {
@@ -286,6 +247,8 @@ const TopTracks = () => {
             tracks={tracks}
             id={id}
             setCurrentTrack={setCurrentTrack}
+            // audio={audio}
+            // setAudio={setAudio}
           />
           <TrackShowcase currentTrack={currentTrack} id={id} />
         </Display>
