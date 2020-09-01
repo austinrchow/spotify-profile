@@ -71,6 +71,7 @@ const Term = styled.div`
 
 function play(event, props, track, id) {
   let audio = document.getElementById(id);
+  audio.currentTime = 0;
   audio.play();
   props.setCurrentTrack(track);
 }
@@ -86,16 +87,10 @@ const TrackList = (props) => {
     <div key={index} style={{ height: "80px", width: "80px" }}>
       <TrackImg
         src={track.album.images[0].url}
-        onMouseOver={(event) =>
-          play(event, props, track, "audio_" + String(index))
-        }
-        onMouseOut={(event) =>
-          pause(event, props, track, "audio_" + String(index))
-        }
+        onMouseOver={(event) => play(event, props, track, "audio_" + track.id)}
+        onMouseOut={(event) => pause(event, props, track, "audio_" + track.id)}
       />
-      <audio id={"audio_" + String(index)}>
-        <source src={track.preview_url}></source>
-      </audio>
+      <audio id={"audio_" + track.id} src={track.preview_url}></audio>
     </div>
   ));
 

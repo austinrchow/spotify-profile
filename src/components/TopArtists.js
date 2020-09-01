@@ -71,6 +71,7 @@ const Term = styled.div`
 
 function play(event, props, artist, id) {
   let audio = document.getElementById(id);
+  audio.currentTime = 0;
   audio.play();
   props.setCurrentArtist(artist);
 }
@@ -83,21 +84,23 @@ function pause(event, props, artist, id) {
 
 const ArtistList = (props) => {
   const artists = props.artists;
-  console.log(artists);
+  console.log("artists", artists);
   const artistItems = artists.map((artist, index) => (
     <div key={index} style={{ height: "80px", width: "80px" }}>
       <TrackImg
-        src={artist.images[0].url}
+        src={artist.images[1].url}
         onMouseOver={(event) =>
-          play(event, props, artist, "artist_audio_" + String(index))
+          play(event, props, artist, "artist_audio_" + artist.id)
         }
         onMouseOut={(event) =>
-          pause(event, props, artist, "artist_audio_" + String(index))
+          pause(event, props, artist, "artist_audio_" + artist.id)
         }
       />
-      <audio id={"artist_audio_" + String(index)}>
-        <source src={artist.topTrack.preview_url}></source>
-      </audio>
+      <audio
+        id={"artist_audio_" + artist.id}
+        src={artist.topTrack.preview_url}
+        autoplay
+      ></audio>
     </div>
   ));
 
@@ -107,10 +110,10 @@ const ArtistList = (props) => {
 const TrackShowcase = (props) => {
   return (
     <div className="trackShowcase">
-      {props.currentTrack && (
+      {props.currentArtist && (
         <img
           style={{ width: "400px", height: "400px" }}
-          src={props.currentTrack.album.images[0].url}
+          src={props.currentArtist.images[1].url}
         />
       )}
     </div>
@@ -118,15 +121,30 @@ const TrackShowcase = (props) => {
 };
 
 const TrackInformation = (props) => {
+  let names = [];
+
+  if (props.currentArtist) {
+    console.log(props.currentArtist);
+    for (var i = 0; i < props.currentArtist.topTrack.artists.length; i++) {
+      names.push(props.currentArtist.topTrack.artists[i].name);
+    }
+  }
+  console.log(names);
   return (
     <div style={{ width: "100%" }}>
-      {props.currentTrack && (
+      {props.currentArtist && (
         <div className="trackInformation">
           <div style={{ color: "grey", fontSize: 18 }}>
-            {props.currentTrack.name}
+            {props.currentArtist.topTrack.name}
           </div>
-          <div style={{ color: "grey", fontSize: 14 }}>
-            {props.currentTrack.artists[0].name}
+          <div style={{ color: "grey", fontSize: 14 }}>{names.join(", ")}</div>
+
+          <div style={{ color: "grey", fontSize: 14, marginTop: "15px" }}>
+            The top track on Spotify for
+          </div>
+
+          <div style={{ color: "white", fontSize: 18 }}>
+            {props.currentArtist.name}
           </div>
         </div>
       )}
@@ -139,24 +157,35 @@ const TrackInformation = (props) => {
 // updates the track state, which is rendered in the TrackList component
 function getTracks(props, event, term) {
   spotifyWebApi
-    .getMyTopTracks({ limit: 50, time_range: term })
+    .getMyTopArtists({ limit: 50, time_range: term })
     .then(function (data) {
-      return data.items.map(function (t) {
-        return t.id;
-      });
+      return data.items;
     })
-    .then(function (trackIds) {
-      return spotifyWebApi.getTracks([], {
-        ids: trackIds,
-        market: "from_token",
-      });
+    .then(function (artists) {
+      let promises = [];
+      for (var i = 0; i < artists.length; i++) {
+        let topTracks = spotifyWebApi.getArtistTopTracks(
+          artists[i].id,
+          "from_token",
+          {}
+        );
+        promises.push(topTracks);
+      }
+      return [promises, artists];
     })
-    .then(function (tracksInfo) {
-      props.setTracks(tracksInfo.tracks);
+    .then(function (artistsInfo) {
+      let artistList = artistsInfo[1];
+      Promise.all(artistsInfo[0]).then(function (results) {
+        for (var i = 0; i < results.length; i++) {
+          artistList[i].topTrack = results[i].tracks[0];
+        }
+        props.setArtists(artistList);
+      });
     })
     .catch(function (error) {
       console.error(error);
     });
+
   document.getElementById(props.selected).classList.remove("active");
   event.target.classList.add("active");
   props.setSelected(event.target.id);
@@ -229,11 +258,9 @@ const TopArtists = () => {
       .then(function (artistsInfo) {
         let artistList = artistsInfo[1];
         Promise.all(artistsInfo[0]).then(function (results) {
-          console.log("results", results);
           for (var i = 0; i < results.length; i++) {
             artistList[i].topTrack = results[i].tracks[0];
           }
-          console.log("update with top track:", artistList);
           setArtists(artistList);
         });
       })
@@ -257,10 +284,10 @@ const TopArtists = () => {
             id={id}
             setCurrentArtist={setCurrentArtist}
           />
-          {/* <TrackShowcase currentTrack={currentTrack} id={id} /> */}
+          <TrackShowcase currentArtist={currentArtist} id={id} />
         </Display>
 
-        {/* <TrackInformation currentTrack={currentTrack} id={id} /> */}
+        <TrackInformation currentArtist={currentArtist} id={id} />
         <audio id="myAudio"></audio>
       </InnerContainer>
     </Container>
