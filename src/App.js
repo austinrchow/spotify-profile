@@ -12,10 +12,12 @@ import {
 function App() {
   // get token here TODO: refresh token
   const params = getHashParams();
+  console.log("params", params);
   // const [delay, setDelay] = useState(1000);
   // const [isCheckingPlayer, setIsCheckingPlayer] = useState(true);
   const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false);
   if (params.access_token) {
+    console.log("we have set the access token", params.access_token);
     spotifyWebApi.setAccessToken(params.access_token);
   }
 
@@ -26,7 +28,7 @@ function App() {
   //   isCheckingPlayer ? delay : null
   // );
 
-  return <div className="App">{loggedIn ? <Profile /> : <Login />}</div>;
+  return <div className="App">{loggedIn ? "hello" : <Login />}</div>;
 }
 
 export default App;

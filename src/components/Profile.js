@@ -20,7 +20,6 @@ const Profile = () => {
   return (
     <Router>
       <Container>
-        {/* <Next>div</Next> */}
         <Navbar />
         <Switch>
           <Route component={About} path="/" exact />
