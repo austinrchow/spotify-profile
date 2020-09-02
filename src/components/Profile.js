@@ -23,11 +23,11 @@ const Profile = () => {
         {/* <Next>div</Next> */}
         <Navbar />
         <Switch>
-          {/* <Route component={About} path="/" exact />
-          <Route component={User} path="/user" exact /> */}
+          <Route component={About} path="/" exact />
+          <Route component={User} path="/user" exact />
           <Route component={TopArtists} path="/artists" />
           <Route component={TopTracks} path="/tracks" />
-          {/* <Route component={Recent} path="/recent" /> */}
+          <Route component={Recent} path="/recent" />
         </Switch>
       </Container>
     </Router>
