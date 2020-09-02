@@ -18,7 +18,7 @@ import MdTime from "react-ionicons/lib/MdTime";
 
 const Nav = styled.nav`
   position: fixed;
-  width: 200px;
+  width: 150px;
   height: 100vh;
   background: #040306;
   padding: 0;
@@ -59,8 +59,8 @@ const NavItem = styled.ul`
 `;
 
 const NavItemText = styled.span`
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   padding-left: 10px;
 `;
 
