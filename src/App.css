@@ -86,3 +86,19 @@ a:active {
   align-items: flex-end;
   justify-content: flex-end;
 }
+
+.more {
+  color: white;
+  font-size: 16px;
+  margin-left: 50px;
+  border: 2px solid white;
+  border-radius: 25px;
+  padding: 7px 20px 7px 20px;
+}
+
+.more:hover,
+.more:focus {
+  background-color: white;
+  color: black;
+  border: 1px solid white;
+}

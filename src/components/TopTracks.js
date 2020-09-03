@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import spotifyWebApi from "../spotify.js";
 import "../App.css";
-import MdPlay from "react-ionicons/lib/MdPlay";
-import $ from "jquery";
 
 const Container = styled.div`
   display: flex;
