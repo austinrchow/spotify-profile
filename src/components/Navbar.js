@@ -76,7 +76,7 @@ const Navbar = () => {
   return (
     <Nav>
       <List>
-        <NavLink
+        {/* <NavLink
           id="nav-link-home"
           to="/"
           className="nav-link"
@@ -95,13 +95,14 @@ const Navbar = () => {
               Home
             </NavItemText>
           </NavItem>
-        </NavLink>
+        </NavLink> */}
 
         <NavLink
           id="nav-link-user"
-          to="/user"
+          to="/"
           className="nav-link"
           activeClassName="nav-link-active"
+          exact={true}
         >
           <NavItem>
             <MdPerson fontSize="30px" color="#ededed" />
